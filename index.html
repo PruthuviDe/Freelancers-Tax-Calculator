@@ -1,0 +1,388 @@
+<div style="padding: 2rem; max-width: 600px; margin: 0 auto; font-family: 'Segoe UI', sans-serif;">
+
+  <div style="background: white; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); padding: 2rem;">
+
+    <h1 style="margin: 0 0 1.5rem 0; color: #2563eb; font-weight: 600; font-size: 1.8rem;">
+
+      💸 Tax Calculator
+
+      <span style="display: inline-block; background: #2563eb20; color: #2563eb; font-size: 0.9rem; padding: 4px 12px; border-radius: 20px; margin-left: 12px;">
+
+        <span id="tax-rate-display">15%</span> Tax Rate
+
+      </span>
+
+    </h1>
+
+    <!-- Exchange Rate Card with Toggle -->
+
+    <div id="exchange-rate" style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 2rem;">
+
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+
+          <div style="background: #2563eb; width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; color: white; font-size: 1.2rem;">
+
+            💹
+
+          </div>
+
+          <div>
+
+            <div style="color: #64748b; font-size: 0.9rem;">Exchange Rate</div>
+
+            <div style="color: #1e293b; font-weight: 600; font-size: 1.2rem;">
+
+              1 USD = <span id="rate-value">...</span> LKR
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <label style="cursor: pointer;">
+
+          <input type="checkbox" id="rate-toggle" style="display: none;">
+
+          <div style="width: 48px; height: 28px; background: #e2e8f0; border-radius: 14px; position: relative; transition: 0.3s;">
+
+            <div style="position: absolute; left: 2px; top: 2px; height: 24px; width: 24px; background: white; border-radius: 50%; transition: 0.3s;"></div>
+
+          </div>
+
+        </label>
+
+      </div>
+
+      <!-- Manual Rate Input -->
+
+      <div id="manual-rate-container" style="display: none; margin-top: 12px;">
+
+        <input type="number" id="manual-rate" 
+
+               style="width: 100%; padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 8px;"
+
+               placeholder="Enter custom rate">
+
+        <div style="color: #64748b; font-size: 0.8rem; margin-top: 4px;">
+
+          Current rate: <span id="current-rate-display">300.00</span> LKR
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Tax Rate Input -->
+
+    <div style="margin-bottom: 2rem;">
+
+      <label style="display: block; color: #475569; margin-bottom: 8px; font-weight: 500;">Tax Percentage</label>
+
+      <div style="position: relative;">
+
+        <input type="number" id="tax-rate" value="15" 
+
+               style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.1rem; transition: all 0.3s ease;"
+
+               placeholder="0.00"
+
+               onfocus="this.style.borderColor = '#2563eb'; this.style.boxShadow = '0 0 0 3px #bfdbfe'"
+
+               onblur="this.style.borderColor = '#e2e8f0'; this.style.boxShadow = 'none'">
+
+        <span style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8;">%</span>
+
+      </div>
+
+    </div>
+
+    <!-- Input Section -->
+
+    <div style="margin-bottom: 2rem;">
+
+      <label style="display: block; color: #475569; margin-bottom: 8px; font-weight: 500;">Monthly Income (USD)</label>
+
+      <div style="position: relative;">
+
+        <input type="number" id="usd-amount" 
+
+               style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1.1rem; transition: all 0.3s ease;"
+
+               placeholder="0.00"
+
+               onfocus="this.style.borderColor = '#2563eb'; this.style.boxShadow = '0 0 0 3px #bfdbfe'"
+
+               onblur="this.style.borderColor = '#e2e8f0'; this.style.boxShadow = 'none'">
+
+        <span style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8;">USD</span>
+
+      </div>
+
+    </div>
+
+    <!-- Calculate Button -->
+
+    <button onclick="calculateTax()" 
+
+            style="width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
+
+            onmouseover="this.style.transform = 'translateY(-1px)'; this.style.boxShadow = '0 5px 15px rgba(37, 99, 235, 0.3)'"
+
+            onmouseout="this.style.transform = 'none'; this.style.boxShadow = 'none'">
+
+      Calculate Tax
+
+    </button>
+
+    <!-- Results -->
+
+    <div id="result" style="margin-top: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 12px; display: none; animation: fadeIn 0.3s ease;">
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+
+        <div style="color: #475569;">Monthly Tax Amount (<span id="tax-rate-display">15</span>%)</div>
+
+        <div style="color: #2563eb; font-weight: 600; font-size: 1.2rem;">$<span id="tax-usd">0.00</span></div>
+
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+
+        <div style="color: #475569;">Converted to LKR</div>
+
+        <div style="color: #16a34a; font-weight: 700; font-size: 1.4rem;">Rs.<span id="tax-lkr">0.00</span></div>
+
+      </div>
+
+      <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+
+          <div style="color: #475569;">Yearly Tax Amount</div>
+
+          <div style="color: #2563eb; font-weight: 600; font-size: 1.2rem;">$<span id="yearly-tax-usd">0.00</span></div>
+
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+          <div style="color: #475569;">Converted to LKR</div>
+
+          <div style="color: #16a34a; font-weight: 700; font-size: 1.4rem;">Rs.<span id="yearly-tax-lkr">0.00</span></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Error Message -->
+
+    <div id="error" style="display: none; margin-top: 1rem; padding: 1rem; background: #fee2e2; color: #dc2626; border-radius: 8px; border: 1px solid #fca5a5;"></div>
+
+    <!-- Tax Situation in Sri Lanka -->
+    <div style="margin-top: 2rem; padding: 1rem; background: #f1f5f9; border-radius: 10px; border: 1px solid #e2e8f0;">
+      <h2 style="font-size: 1.5rem; color: #2563eb;">Tax Situation in Sri Lanka</h2>
+      <p style="color: #475569;">
+        The tax system in Sri Lanka comprises various taxes, including income tax, value-added tax (VAT), and more. The income tax rates vary based on the individual's income bracket. 
+        It is essential for taxpayers to stay informed about the current rates and regulations to ensure compliance and optimize their tax liabilities. 
+        For detailed insights and updates on the tax situation in Sri Lanka, visit <a href="https://www.taxadvisor.lk/article/sei" style="color: #2563eb; text-decoration: underline;">Tax Advisor</a> 
+        or check the latest bills and regulations at <a href="https://documents.gov.lk/view/bills/bl_2025.html" style="color: #2563eb; text-decoration: underline;">Government Documents</a>.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let currentRate = 300;
+
+let autoUpdate = true;
+
+// Toggle handler
+
+document.getElementById('rate-toggle').addEventListener('change', function(e) {
+
+  const manualContainer = document.getElementById('manual-rate-container');
+
+  const toggleSlider = document.querySelector('#rate-toggle + div');
+
+  autoUpdate = !e.target.checked;
+
+  if (autoUpdate) {
+
+    manualContainer.style.display = 'none';
+
+    toggleSlider.style.backgroundColor = '#e2e8f0';
+
+    toggleSlider.querySelector('div').style.transform = 'translateX(0)';
+
+    fetchExchangeRate();
+
+  } else {
+
+    manualContainer.style.display = 'block';
+
+    toggleSlider.style.backgroundColor = '#10b981';
+
+    toggleSlider.querySelector('div').style.transform = 'translateX(20px)';
+
+    document.getElementById('manual-rate').focus();
+
+  }
+
+});
+
+// Manual rate input handler
+
+document.getElementById('manual-rate').addEventListener('input', function(e) {
+
+  const newRate = parseFloat(e.target.value);
+
+  if (!isNaN(newRate)) {
+
+    currentRate = newRate;
+
+    document.getElementById('current-rate-display').textContent = newRate.toFixed(2);
+
+    document.getElementById('rate-value').textContent = newRate.toFixed(2);
+
+  }
+
+});
+
+// Modified fetch function
+
+async function fetchExchangeRate() {
+
+  const rateContainer = document.getElementById('exchange-rate');
+
+  try {
+
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+
+    const data = await response.json();
+
+    currentRate = data.rates.LKR;
+
+    if (autoUpdate) {
+
+      document.getElementById('rate-value').textContent = currentRate.toFixed(2);
+
+      document.getElementById('current-rate-display').textContent = currentRate.toFixed(2);
+
+      rateContainer.style.animation = 'rateShimmer 1.5s ease';
+
+      setTimeout(() => {
+
+        rateContainer.style.animation = '';
+
+      }, 1500);
+
+    }
+
+  } catch (error) {
+
+    document.getElementById('error').style.display = 'block';
+
+    document.getElementById('error').textContent = 'Failed to load exchange rates. Using current rate: ' + currentRate.toFixed(2) + ' LKR';
+
+  }
+
+}
+
+// Calculation function
+
+function calculateTax() {
+
+  const input = document.getElementById('usd-amount');
+
+  const resultDiv = document.getElementById('result');
+
+  const TAX_RATE = parseFloat(document.getElementById('tax-rate').value) / 100;
+
+  if (!input.value || isNaN(input.value)) {
+
+    input.style.borderColor = '#dc2626';
+
+    input.focus();
+
+    return;
+
+  }
+
+  const usdAmount = parseFloat(input.value);
+
+  const taxUSD = usdAmount * TAX_RATE;
+
+  const taxLKR = taxUSD * currentRate;
+
+  const yearlyTaxUSD = taxUSD * 12; // Yearly tax in USD
+
+  const yearlyTaxLKR = taxLKR * 12; // Yearly tax in LKR
+
+  // Animate results
+
+  resultDiv.style.display = 'block';
+
+  resultDiv.style.opacity = 0;
+
+  resultDiv.style.transform = 'translateY(10px)';
+
+  setTimeout(() => {
+
+    resultDiv.style.opacity = 1;
+
+    resultDiv.style.transform = 'translateY(0)';
+
+  }, 50);
+
+  document.getElementById('tax-usd').textContent = taxUSD.toFixed(2);
+
+  document.getElementById('tax-lkr').textContent = taxLKR.toFixed(2);
+
+  document.getElementById('yearly-tax-usd').textContent = yearlyTaxUSD.toFixed(2);
+
+  document.getElementById('yearly-tax-lkr').textContent = yearlyTaxLKR.toFixed(2);
+
+  document.getElementById('tax-rate-display').textContent = (TAX_RATE * 100).toFixed(2); // Update displayed tax rate
+
+}
+
+// Initial load
+
+fetchExchangeRate();
+
+// Add stylesheet for animations
+
+const style = document.createElement('style');
+
+style.textContent = `
+
+  @keyframes fadeIn {
+
+    from { opacity: 0; transform: translateY(10px); }
+
+    to { opacity: 1; transform: translateY(0); }
+
+  }
+
+  @keyframes rateShimmer {
+
+    0% { background-position: -1000px 0; }
+
+    100% { background-position: 1000px 0; }
+
+  }
+
+`;
+
+document.head.appendChild(style);
+
+</script>
